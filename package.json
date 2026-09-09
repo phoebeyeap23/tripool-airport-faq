@@ -1,0 +1,20 @@
+{
+  "name": "tripool-faq",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "node build/build.mjs --fragment",
+    "dev": "node build/build.mjs --fragment && npx --yes serve dist"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "js-yaml": "^5.4.1"
+  },
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "playwright": "^1.63.0"
+  }
+}
