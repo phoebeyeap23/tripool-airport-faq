@@ -1,0 +1,36 @@
+country: tw
+code: TPE
+draft: true
+name:
+  zh-TW: 桃園機場
+  en: Taoyuan Airport
+service:
+  zh-TW: 接機
+  en: Airport Pickup
+updated: 2026-09-08
+
+vars:
+  freeWaitMinutes: "90"
+  overtimeUnit: "30"
+  overtimeFee: "500 元"
+  overtimeFeeEn: "TWD 500"
+  cancelDays: "3"
+  cancelTime: "18:00"
+  luggageLarge: "1"
+  luggageSmall: "1"
+  childSeatRule: "（待確認）"
+  childSeatRuleEn: "(to be confirmed)"
+  meetingPoint: "（待確認）"
+  meetingPointEn: "(to be confirmed)"
+
+notes:
+  - use: contact-on-arrival
+  - use: luggage
+  - use: flight-change
+
+faq:
+  - use: free-waiting
+  - use: cancellation
+  - use: order-confirm
+  - use: driver-info
+  - use: extra-stop

@@ -1,0 +1,384 @@
+<title>tripool 接送服務說明</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f6f7f8; --surface:#ffffff; --surface-2:#f0f2f3;
+    --text:#15201f; --muted:#5d6b6a; --faint:#8a9694;
+    --line:#e2e6e6; --line-strong:#cfd6d5;
+    --accent:#0f8f83; --accent-soft:#e4f3f1; --accent-ink:#0a6c63;
+    --warn-bg:#fdf4e3; --warn-line:#e8d3a3; --warn-ink:#7a5a15;
+    --radius:14px;
+    --font:"Noto Sans TC","PingFang TC","Hiragino Sans","Microsoft JhengHei",
+           -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0e1413; --surface:#161d1c; --surface-2:#1d2625;
+      --text:#e8eeed; --muted:#9aa9a7; --faint:#778583;
+      --line:#26302f; --line-strong:#35413f;
+      --accent:#3fb9ab; --accent-soft:#122b28; --accent-ink:#5fd0c2;
+      --warn-bg:#2a2214; --warn-line:#4d3f22; --warn-ink:#d9be82;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0e1413; --surface:#161d1c; --surface-2:#1d2625;
+    --text:#e8eeed; --muted:#9aa9a7; --faint:#778583;
+    --line:#26302f; --line-strong:#35413f;
+    --accent:#3fb9ab; --accent-soft:#122b28; --accent-ink:#5fd0c2;
+    --warn-bg:#2a2214; --warn-line:#4d3f22; --warn-ink:#d9be82;
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:var(--font); font-size:16px; line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 20px}
+
+  /* ── header ── */
+  header{
+    position:sticky; top:0; z-index:20;
+    background:color-mix(in srgb, var(--surface) 88%, transparent);
+    backdrop-filter:saturate(1.4) blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .bar{display:flex;align-items:center;gap:12px;height:56px}
+  .logo{display:flex;align-items:center;gap:8px;font-weight:700;letter-spacing:-.01em;
+        color:var(--text);text-decoration:none;font-size:16px}
+  .logo .mark{
+    width:26px;height:26px;border-radius:8px;display:grid;place-items:center;
+    background:var(--accent);color:#fff;font-size:13px;font-weight:800;
+  }
+  .spacer{flex:1}
+  .langs{display:flex;background:var(--surface-2);border-radius:99px;padding:3px;gap:2px}
+  .langs button{
+    border:0;background:transparent;color:var(--muted);font:inherit;font-size:13px;
+    padding:5px 12px;border-radius:99px;cursor:pointer;white-space:nowrap;
+  }
+  .langs button[aria-pressed="true"]{background:var(--surface);color:var(--text);
+    box-shadow:0 1px 3px rgba(0,0,0,.10);font-weight:600}
+
+  /* ── hero + pickers ── */
+  .hero{padding:34px 0 20px}
+  h1{margin:0 0 6px;font-size:27px;line-height:1.3;letter-spacing:-.02em}
+  .sub{margin:0;color:var(--muted);font-size:15px}
+
+  .pickers{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:22px 0 8px}
+  @media (max-width:560px){.pickers{grid-template-columns:1fr}}
+  .field label{display:block;font-size:12px;font-weight:600;color:var(--faint);
+    letter-spacing:.04em;text-transform:uppercase;margin-bottom:6px}
+  .field select{
+    width:100%;appearance:none;font:inherit;font-size:15px;color:var(--text);
+    background:var(--surface);border:1px solid var(--line-strong);border-radius:12px;
+    padding:11px 38px 11px 13px;cursor:pointer;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238a9694' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-repeat:no-repeat;background-position:right 13px center;
+  }
+  .field select:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+
+  .searchbox{position:relative;margin:14px 0 0}
+  .searchbox input{
+    width:100%;font:inherit;font-size:15px;color:var(--text);
+    background:var(--surface);border:1px solid var(--line-strong);border-radius:12px;
+    padding:11px 13px 11px 38px;
+  }
+  .searchbox svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);
+    width:15px;height:15px;stroke:var(--faint);fill:none;stroke-width:2.2}
+  .searchbox input:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+
+  /* ── station header ── */
+  .station{
+    display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
+    margin:30px 0 4px;padding-top:26px;border-top:1px solid var(--line);
+  }
+  .station h2{margin:0;font-size:21px;letter-spacing:-.01em}
+  .chip{
+    font-size:11px;font-weight:700;letter-spacing:.08em;
+    background:var(--accent-soft);color:var(--accent-ink);
+    padding:3px 8px;border-radius:6px;
+  }
+  .meta{display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    color:var(--faint);font-size:13px;margin:2px 0 0}
+  .linkbtn{border:0;background:none;padding:0;font:inherit;font-size:13px;
+    color:var(--accent-ink);cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+  .linkbtn:hover{text-decoration:underline}
+
+  .banner{
+    display:flex;gap:9px;margin:16px 0 0;padding:11px 14px;font-size:14px;
+    background:var(--warn-bg);border:1px solid var(--warn-line);
+    color:var(--warn-ink);border-radius:10px;
+  }
+
+  /* ── sections ── */
+  section{margin:32px 0}
+  h3{margin:0 0 12px;font-size:13px;font-weight:700;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--faint)}
+
+  ul.notes{list-style:none;margin:0;padding:0;
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius)}
+  ul.notes li{display:flex;gap:11px;padding:13px 16px;font-size:15px;
+    border-top:1px solid var(--line)}
+  ul.notes li:first-child{border-top:0}
+  ul.notes li::before{
+    content:"";flex:none;width:6px;height:6px;margin-top:.62em;border-radius:50%;
+    background:var(--accent);
+  }
+
+  .faq{background:var(--surface);border:1px solid var(--line);
+    border-radius:var(--radius);overflow:hidden}
+  details{border-top:1px solid var(--line)}
+  details:first-child{border-top:0}
+  summary{
+    list-style:none;cursor:pointer;padding:15px 46px 15px 16px;position:relative;
+    font-weight:600;font-size:15.5px;
+  }
+  summary::-webkit-details-marker{display:none}
+  summary:hover{background:var(--surface-2)}
+  summary::after{
+    content:"";position:absolute;right:18px;top:22px;width:8px;height:8px;
+    border-right:2px solid var(--faint);border-bottom:2px solid var(--faint);
+    transform:rotate(45deg);transition:transform .18s ease;
+  }
+  details[open] summary::after{transform:rotate(-135deg);top:25px}
+  details[open] summary{color:var(--accent-ink)}
+  .answer{padding:0 16px 16px;color:var(--muted);font-size:15px}
+  .answer p{margin:0 0 10px}
+  .answer p:last-child{margin-bottom:0}
+  .answer a{color:var(--accent-ink)}
+  mark{background:var(--accent-soft);color:inherit;border-radius:3px;padding:0 2px}
+
+  .empty{padding:26px 16px;text-align:center;color:var(--faint);font-size:14px;
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius)}
+
+  .contact{
+    margin:30px 0 0;padding:18px;border-radius:var(--radius);
+    background:var(--accent-soft);border:1px solid color-mix(in srgb,var(--accent) 22%,transparent);
+  }
+  .contact strong{display:block;margin-bottom:3px;font-size:15px;color:var(--accent-ink)}
+  .contact p{margin:0;font-size:14.5px;color:var(--text)}
+  .contact a{color:var(--accent-ink)}
+
+  footer{margin:44px 0 60px;padding-top:18px;border-top:1px solid var(--line);
+    color:var(--faint);font-size:13px;display:flex;gap:12px;flex-wrap:wrap}
+  footer a{color:var(--faint)}
+
+  @media print{
+    header,.pickers,.searchbox,.linkbtn{display:none}
+    body{background:#fff}
+    details{border-top:1px solid #ddd}
+    details .answer{display:block !important}
+  }
+</style>
+
+<header>
+  <div class="wrap bar">
+    <a class="logo" id="brandLink" href="#"><span class="mark">t</span><span id="brandName">tripool</span></a>
+    <span class="spacer"></span>
+    <div class="langs" id="langs" role="group"></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="hero">
+    <h1 id="pageTitle"></h1>
+    <p class="sub" id="pageSub"></p>
+
+    <div class="pickers">
+      <div class="field">
+        <label for="country" id="countryLabel"></label>
+        <select id="country"></select>
+      </div>
+      <div class="field">
+        <label for="airport" id="airportLabel"></label>
+        <select id="airport"></select>
+      </div>
+    </div>
+
+    <div class="searchbox">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input id="search" type="search" autocomplete="off">
+    </div>
+  </div>
+
+  <div class="station">
+    <h2 id="stationName"></h2>
+    <span class="chip" id="stationCode"></span>
+    <span class="chip" id="stationService"></span>
+  </div>
+  <div class="meta">
+    <span id="updated"></span>
+    <button class="linkbtn" id="copyBtn"></button>
+  </div>
+
+  <div id="draftBanner" hidden class="banner">
+    <span>⚠️</span><span id="draftText"></span>
+  </div>
+
+  <section id="notesSection">
+    <h3 id="notesHeading"></h3>
+    <ul class="notes" id="notes"></ul>
+  </section>
+
+  <section id="faqSection">
+    <h3 id="faqHeading"></h3>
+    <div class="faq" id="faq"></div>
+    <div class="empty" id="faqEmpty" hidden></div>
+  </section>
+
+  <div class="contact">
+    <strong id="contactHeading"></strong>
+    <p id="contactBody"></p>
+  </div>
+
+  <footer>
+    <span>© <span id="year"></span> tripool 旅步</span>
+    <a id="siteLink" href="#" target="_blank" rel="noopener">tripool.app</a>
+  </footer>
+</main>
+
+<script>
+const DATA = /*__DATA__*/{};
+
+const $ = id => document.getElementById(id);
+const params = new URLSearchParams(location.search);
+const LANGS = DATA.site.languages.map(l => l.code);
+
+let lang = (() => {
+  const q = params.get('lang');
+  if (LANGS.includes(q)) return q;
+  try { const s = localStorage.getItem('tp-lang'); if (LANGS.includes(s)) return s; } catch(e){}
+  const nav = (navigator.language || '').toLowerCase();
+  if (nav.startsWith('zh')) return LANGS.includes('zh-TW') ? 'zh-TW' : LANGS[0];
+  if (nav.startsWith('en') && LANGS.includes('en')) return 'en';
+  return LANGS[0];
+})();
+
+let current = DATA.airports[params.get('a')] ? params.get('a') : DATA.defaultAirport;
+let query = '';
+
+/* ---------- helpers ---------- */
+const t = k => (DATA.site.ui[lang] || {})[k] || '';
+const tx = (obj) => !obj ? '' : (obj[lang] ?? obj[LANGS[0]] ?? '');
+
+function esc(s){ return s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+/* very small markdown: [text](url), **bold**, blank-line paragraphs */
+function md(src){
+  return String(src).trim().split(/\n{2,}/).map(block => {
+    let h = esc(block.trim().replace(/\n/g,' '));
+    h = h.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g,
+      (m,txt,url) => `<a href="${url}">${txt}</a>`);
+    h = h.replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>');
+    return `<p>${h}</p>`;
+  }).join('');
+}
+
+function highlight(html, q){
+  if (!q) return html;
+  const re = new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ')','gi');
+  return html.replace(/>([^<]+)</g, (m, txt) => '>' + txt.replace(re,'<mark>$1</mark>') + '<');
+}
+
+/* ---------- rendering ---------- */
+function render(){
+  const ap = DATA.airports[current];
+  document.documentElement.lang = lang;
+
+  $('brandName').textContent = DATA.site.brand.name;
+  $('brandLink').href = DATA.site.brand.site;
+  $('siteLink').href = DATA.site.brand.site;
+  $('pageTitle').textContent = t('title');
+  $('pageSub').textContent = t('subtitle');
+  $('countryLabel').textContent = t('country_label');
+  $('airportLabel').textContent = t('airport_label');
+  $('notesHeading').textContent = t('notes_heading');
+  $('faqHeading').textContent = t('faq_heading');
+  $('contactHeading').textContent = t('contact_heading');
+  $('contactBody').innerHTML = md(t('contact_body')
+    .replace('{email}', `[${DATA.site.brand.email}](mailto:${DATA.site.brand.email})`));
+  $('search').placeholder = t('search');
+  $('faqEmpty').textContent = t('no_result');
+  $('copyBtn').textContent = '🔗 ' + t('copy_link');
+  $('year').textContent = new Date().getFullYear();
+  document.title = `${tx(ap.name)} ${tx(ap.service)} | ${DATA.site.brand.name}`;
+
+  /* language pills */
+  $('langs').innerHTML = DATA.site.languages.map(l =>
+    `<button data-lang="${l.code}" aria-pressed="${l.code===lang}">${l.label}</button>`).join('');
+
+  /* selects */
+  const countries = DATA.countries.filter(c => DATA.byCountry[c.code]?.length);
+  $('country').innerHTML = countries.map(c =>
+    `<option value="${c.code}"${c.code===ap.country?' selected':''}>${c.flag} ${tx(c.name)}</option>`).join('');
+  $('airport').innerHTML = (DATA.byCountry[ap.country]||[]).map(id => {
+    const a = DATA.airports[id];
+    return `<option value="${id}"${id===current?' selected':''}>${tx(a.name)} (${a.code})${a.draft?' ・草稿':''}</option>`;
+  }).join('');
+
+  /* station */
+  $('stationName').textContent = tx(ap.name);
+  $('stationCode').textContent = ap.code;
+  $('stationService').textContent = tx(ap.service);
+  $('updated').textContent = ap.updated ? `${t('updated')} ${ap.updated}` : '';
+  $('draftBanner').hidden = !ap.draft;
+  $('draftText').textContent = lang === 'en'
+    ? 'This station is still being reviewed — details may change.'
+    : '本站點內容尚在確認中，數值可能異動。';
+
+  const q = query.trim().toLowerCase();
+  const hit = s => !q || s.toLowerCase().includes(q);
+
+  /* notes */
+  const notes = ap.notes.filter(n => hit(tx(n.text)));
+  $('notesSection').hidden = notes.length === 0;
+  $('notes').innerHTML = notes.map(n =>
+    `<li><span>${highlight(esc(tx(n.text)), q)}</span></li>`).join('');
+
+  /* faq */
+  const faq = ap.faq.filter(f => hit(tx(f.q) + ' ' + tx(f.a)));
+  $('faq').hidden = faq.length === 0;
+  $('faqEmpty').hidden = faq.length !== 0 || notes.length !== 0;
+  $('faq').innerHTML = faq.map(f => `
+    <details${q ? ' open' : ''}>
+      <summary>${highlight(esc(tx(f.q)), q)}</summary>
+      <div class="answer">${highlight(md(tx(f.a)), q)}</div>
+    </details>`).join('');
+}
+
+function syncUrl(){
+  try {
+    const u = new URL(location.href);
+    u.searchParams.set('a', current);
+    u.searchParams.set('lang', lang);
+    history.replaceState(null, '', u);
+  } catch(e){ /* 某些預覽環境不允許改網址，忽略即可 */ }
+}
+
+/* ---------- events ---------- */
+$('langs').addEventListener('click', e => {
+  const b = e.target.closest('button[data-lang]'); if(!b) return;
+  lang = b.dataset.lang;
+  try { localStorage.setItem('tp-lang', lang); } catch(err){}
+  syncUrl(); render();
+});
+$('country').addEventListener('change', e => {
+  current = DATA.byCountry[e.target.value][0];
+  syncUrl(); render();
+});
+$('airport').addEventListener('change', e => {
+  current = e.target.value; syncUrl(); render();
+});
+$('search').addEventListener('input', e => { query = e.target.value; render(); });
+$('copyBtn').addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(location.href);
+    $('copyBtn').textContent = '✓ ' + t('copied');
+    setTimeout(() => { $('copyBtn').textContent = '🔗 ' + t('copy_link'); }, 1600);
+  } catch(err){}
+});
+
+syncUrl();
+render();
+</script>
